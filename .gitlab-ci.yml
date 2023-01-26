@@ -1,0 +1,80 @@
+stages:
+  - quality-gate
+  - build-image
+  - deploy-to-gke 
+
+variables:
+  GKE_NAMESPACE: "express-service"
+
+sonarqube-check:
+  stage : quality-gate
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  script:
+    - sonar-scanner -Dsonar.qualitygate.wait=true
+  allow_failure: true
+  only:
+    - development
+  
+build-docker:
+  stage: build-image
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --build-arg branch=$CI_COMMIT_REF_NAME
+  only:
+    - development
+    - /^release\/.+/
+    - master
+
+deploy-dev:
+  stage: deploy-to-gke 
+  image:
+    name: kiwigrid/gcloud-kubectl-helm:3.3.4-312.0.0-267
+    entrypoint: [""]  
+  environment:
+    name: development
+  needs:
+    - sonarqube-check
+    - build-docker
+  script:
+    - helm upgrade $CI_PROJECT_NAME deployment-auth --namespace $GKE_NAMESPACE --values deployment-auth/values.yaml --set-string image.repository=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --install
+  only:
+    - development
+
+deploy-testing:
+  stage: deploy-to-gke 
+  image:
+    name: kiwigrid/gcloud-kubectl-helm:3.3.4-312.0.0-267
+    entrypoint: [""]  
+  environment:
+    name: testing
+  needs:
+    - build-docker
+  script:
+    - gcloud container clusters get-credentials $GKE_TESTING_CLUSTER --project $GKE_TESTING_PROJECT --region asia-southeast2 --internal-ip
+    - helm upgrade $CI_PROJECT_NAME deployment-auth --namespace $GKE_NAMESPACE --values deployment-auth/values.yaml --set-string image.repository=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --install
+  only:
+    - ^release\/.+
+
+deploy-prod:
+  stage: deploy-to-gke 
+  image:
+    name: kiwigrid/gcloud-kubectl-helm:3.3.4-312.0.0-267
+    entrypoint: [""]  
+  environment:
+    name: production
+  needs:
+    - build-docker
+  script:
+    - gcloud container clusters get-credentials $GKE_PRODUCTION_CLUSTER --project $GKE_PRODUCTION_PROJECT --region asia-southeast2 --internal-ip
+    - helm upgrade $CI_PROJECT_NAME deployment-auth --namespace $GKE_NAMESPACE --values deployment-auth/values.yaml --set-string image.repository=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --install
+  only:
+    - master
+  when: manual

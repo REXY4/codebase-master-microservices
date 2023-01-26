@@ -1,0 +1,23 @@
+require('dotenv').config();
+
+const path = require('path');
+const { env } = process;
+const option = {
+  'config': path.resolve('config', 'sql.js'),
+  'models-path': path.resolve('./src/sql-model'),
+  'seeders-path': path.resolve('sql-seeders'),
+  'migrations-path': path.resolve('sql-migrations'),
+  'debug': true
+}
+
+if (process.env.npm_lifecycle_script.indexOf('db:create') > -1) {
+  Object.assign(option, {
+    'charset': env.SQL_CHARSET,
+    'collate': env.SQL_COLLATE,
+    'encoding': env.SQL_ENCODING,
+    // 'ctype': env.SQL_CTYPE,
+    // 'template': env.SQL_TEMPLATE,
+  })
+}
+
+module.exports = option;

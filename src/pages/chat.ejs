@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Socket.IO Chat Example</title>
+  <link rel="stylesheet" href="css/chat.css" />
+  <style></style>
+</head>
+
+<body>
+  <div class="wrapper" id="loginSection">
+    <div style="padding: 20px">
+      <div>
+        <span>Enter room as:</span>
+        <select id="users">
+          <option> -- Choose one --</option>
+          <option value="eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbmRhaWthbkBub2RvbWFpbi5jb20iLCJwcm9maWxlIjp7ImFjY291bnRJZCI6IjEiLCJ1c3JSZWdpc3RyYW50SWQiOiIxIiwidW5hbWUiOiJhbmRhaWthbiIsImVtYWlsIjoiYW5kYWlrYW5Abm9kb21haW4uY29tIiwicGhvbmUiOiIrNjI4NjMxMzE0OXh4eCIsIm5hbWUiOiJBbmRhaWthbiJ9LCJyb2xlcyI6WyJvd25lciJdLCJzY29wZSI6Im9mZmxpbmVfYWNjZXNzIiwiY2xpZW50X2lkIjoiYWxsLWluLW9uZS1jbGllbnQiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjMwMDEveHl6IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdC9vYXV0aC9hL2IvYyIsImV4cCI6MTcwMzE2NTAxOSwiaWF0IjoxNjcxNjI1MDE5fQ.VwjWqOKmcns9z0wdaKwolFveAbY96ehmTO6cizO6utLJuXStsrQd9DerIo9YY81zHc1xfAoP_ubR__uVRkk1Ecv4H0VevzM2NPvG7iwtoHsaUPLTgcZ9havrhfQcTD9lvIfBG4yffZL5BPN9FFSpoCu7KfmS7PyDgKmgekYnQLRNGclwq1Lic1z8awPXs_p_JxxUCBrvXwK1HpMGj-WnC56QIPnKD1uV9polgglmeT-dLDsIafSrec8JFc1gGlr1R0A_zO0NbfWfy7iStW03nGPwcZ0cJhu0OfMs5ZXX1ySyA11M_aNcKYRi4hZaMKDtOIDB0pbSZbg5CTpC43NGIg">Andaikan (owner)</option>
+          <option value="eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiYXJ0b2xvbWVvQG5vZG9tYWluLmNvbSIsInByb2ZpbGUiOnsiYWNjb3VudElkIjoiMiIsInVzclJlZ2lzdHJhbnRJZCI6IjIiLCJ1bmFtZSI6ImJhcnRvbG9tZW8iLCJlbWFpbCI6ImJhcnRvbG9tZW9Abm9kb21haW4uY29tIiwicGhvbmUiOiIrNjI4NjMxMzE1OXh4eCIsIm5hbWUiOiJCYXJ0byJ9LCJyb2xlcyI6WyJhZG1pbiJdLCJzY29wZSI6Im9mZmxpbmVfYWNjZXNzIiwiY2xpZW50X2lkIjoiYWxsLWluLW9uZS1jbGllbnQiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjMwMDEveHl6IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdC9vYXV0aC9hL2IvYyIsImV4cCI6MTcwMzE2NTAyNywiaWF0IjoxNjcxNjI1MDI3fQ.CeFD6YEYFUpEreyaehsAAPBXMsyTfwb7oPzsrIiCT9iJL2V93axBmPegUPJt2uP8Y1ARyS61RrLOuii29kdmC53a91IR1bru9PDUkmmc-fxSYFT_60_WYCtgqAVPto7SHJ7pQb8TUiXgPp-fD-f_oZrcEOu-yu-qjdOI7MzT4rx2b5v_2spYAgPxQQhJka8XNStW3jjE_x3GomDH06kWYHKOYGr8m2fnqfyjpPDSwHNDrYfj1QmMtbviLZ6cc-uBVsZm_LPjLj044A_vIVNXK0RC9lpyNeq2uZukIjT_UlqLLTUe92B7hT195BeToX-nq62J_BhtBnbiPBmHzCmV7g">Barto (admin)</option>
+          <option value="eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYW5jYW5Abm9kb21haW4uY29tIiwicHJvZmlsZSI6eyJhY2NvdW50SWQiOiIzIiwidXNyUmVnaXN0cmFudElkIjoiY2FuY2FuIiwidW5hbWUiOiJjYW5jYW4iLCJlbWFpbCI6ImNhbmNhbkBub2RvbWFpbi5jb20iLCJwaG9uZSI6Iis2Mjg2MzEzMTY5eHh4IiwibmFtZSI6IkNhbkNhbiJ9LCJyb2xlcyI6WyJjdXN0b21lcl9zZXJ2aWNlIl0sInNjb3BlIjoib2ZmbGluZV9hY2Nlc3MiLCJjbGllbnRfaWQiOiJhbGwtaW4tb25lLWNsaWVudCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMS94eXoiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0L29hdXRoL2EvYi9jIiwiZXhwIjoxNzAzMTY1MDM0LCJpYXQiOjE2NzE2MjUwMzR9.CXyEZ8Vgc8GsLdlG3CiB7Dkkm9VcYNRYRTf_QpCZnYKX7_giU2tDdcpGlu5nkUdcipuvfktfzjtguDkWf2-Ve_YkHKmvxKN89JL5e2jxKIYhpL8zq8Xy-F_ebGH-ENdyySJpEff4zjV1JR0AWMehVgSZCslwLLq3J8p6N43wl0Al8Ihu_GICLnD8Ye8ujYkQKdCp6H3v1KRVHCJjrXAJmLXGwWoTNreQJKlswGzBG6vWkwqIPpRJ9eJk5E4nkoYuC8LaBV_Z_3l8sLDGeKvUndzZvp26NXrSqNrR_lyeBlEMpeKJGTF6dekgivZtkrd-bi0fNk463xa4RH1jThJE-Q">CanCan (customer_service)</option>
+          <option value="eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkb25kZWxAbm9kb21haW4uY29tIiwicHJvZmlsZSI6eyJhY2NvdW50SWQiOiI0IiwidXNyUmVnaXN0cmFudElkIjoiNCIsInVuYW1lIjoiZG9uZGVsIiwiZW1haWwiOiJkb25kZWxAbm9kb21haW4uY29tIiwicGhvbmUiOiIrNjI4NjMxMzE3OXh4eCIsIm5hbWUiOiJEb25kZWwifSwicm9sZXMiOlsiY2xpZW50Il0sInNjb3BlIjoib2ZmbGluZV9hY2Nlc3MiLCJjbGllbnRfaWQiOiJhbGwtaW4tb25lLWNsaWVudCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMS94eXoiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0L29hdXRoL2EvYi9jIiwiZXhwIjoxNzAzMTY1MDQwLCJpYXQiOjE2NzE2MjUwNDB9.MqfxBIX7j7tk2cU5-knKlnmJ1xwG6JqvX8frTpespPBBdT06_fNRedVGcSp5lon0-H8iQ6ahTFUDe4Wy53To3H9jZUVOxbEnkYZVTHynjbLCn4zroA4krLgvy5WfRiUWuliLpnS_fEB7hW0H1pX9Z0WGQybQBph5WNo9oRwKXqMzjibGDeO5M0R9QqS--Umn_7rqmkeK58vHYybwIdFgSEixvLja1ewUmjAtI37knIxy1Fx5_xrq2IjVaOoCS5WVP6eWqsSTK0ElkyOTl6o1cbVCCaHxRnKBpqRHT8nFPZzMXcKMaCZsYKim4MNEGotxpIu5QvrU-t3moIJFGhZjhw">Dondel (client)</option>
+          <option value="eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlcmlrb3Bsb0Bub2RvbWFpbi5jb20iLCJwcm9maWxlIjp7ImFjY291bnRJZCI6IjUiLCJ1c3JSZWdpc3RyYW50SWQiOiI1IiwidW5hbWUiOiJlcmlrb3BsbyIsImVtYWlsIjoiZXJpa29wbG9Abm9kb21haW4uY29tIiwicGhvbmUiOiIrNjI4NjMxMzE4OXh4eCIsIm5hbWUiOiJFcm9rb3ZsbyJ9LCJyb2xlcyI6WyJleHBlcnQiXSwic2NvcGUiOiJvZmZsaW5lX2FjY2VzcyIsImNsaWVudF9pZCI6ImFsbC1pbi1vbmUtY2xpZW50IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDozMDAxL3h5eiIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Qvb2F1dGgvYS9iL2MiLCJleHAiOjE3MDMxNjUwNDcsImlhdCI6MTY3MTYyNTA0N30.P8giWlTsMdyUesrJOdIwslwCIKdTYeuhcUvipN7EbhyqC3dpqHND9-_bhjexJXLPtDBWEpgqsTaBDGMVcxOTu9PS-UQwvf8hbAoU8il_z4O6AEum3Zu5XsVe_w9cPU6vuTtmsonTdi3fQC-TOUAof8Ah1ho6CtXzVBpWE40x_Wd8vkSBviSg2ryjPSq0hkZBKgAI9-eBoFaWr3_PUysdVBME80raF7yUzJvEldnMOhSRZS7rlJpDJvpXfYQx8QVOblJxyT-P_ycvg0j6pAhTTBeEqahzdnrN8ompeMWv69SuzO3oEYpvr-jdr5wpcZBaed3EbxBolwZdSKRi4djMtw">Erikovlo (expert)</option>
+        </select>
+      </div>
+      <br>
+      <div id="serveUser" style="display: none">
+        <span>Select user to serve:</span>
+        <select id="serveUserList">
+          <option> -- Choose one --</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="wrapper" style="display: none" id="chatSection">
+    <div style="height: 20px; padding: 10px; background-color: beige">
+      <div style="float: left" id="usernameLbl">username</div>
+      <div style="float: left; color: red">@</div>
+      <div style="float: left; margin-right: 10px" id="roomLbl">room</div>
+      <input id="messageInput" type="text" style="width: 400px" />
+      <input id="connectToggleBtn" type="button" value="make offline" />
+      <input id="leaveRoomBtn" type="button" value="leave" />
+      <div style="float: right" id="statusLbl">...</div>
+    </div>
+    <div style="height: calc(100% - 40px); overflow: scroll" id="chatContainer">
+      <div class="message">example message here..</div>
+    </div>
+  </div>
+  <script src="chat.js"></script>
+</body>
+
+</html>

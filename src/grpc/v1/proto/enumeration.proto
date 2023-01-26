@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package Enumeration;
+
+message EnumerationEmpty {}
+
+message EnumerationId {
+  uint32 id = 1;
+}
+
+// used for adding data
+message EnumerationPayload {
+  optional uint32 id = 1;
+  string key = 2;
+  string value = 3;
+  optional string notes = 4;
+}
+
+// used for update data payload
+message EnumerationUpdate {
+  optional string key = 1;
+  optional string value = 2;
+  optional string notes = 3;
+}
+
+// since rpc service only support one argument, we wrap inside "update" key
+message EnumerationUpdatePayload {
+  uint32 id = 1;
+  EnumerationUpdate update = 2;
+}
+
+service EnumerationMethod {
+  rpc CreateEnumeration (EnumerationPayload) returns (EnumerationRows) {}
+  rpc GetEnumerations (EnumerationEmpty) returns (EnumerationRows) {}
+  rpc GetEnumerationById (EnumerationId) returns (EnumerationRows) {}
+  // rpc DeleteEnumerationById (EnumerationId) returns (EnumerationId) {}
+  // rpc UpdateEnumerationById (EnumerationUpdatePayload) returns (EnumerationRows) {}
+}
+
+// used for response
+message EnumerationRows {
+  repeated EnumerationPayload rows = 1;
+}
