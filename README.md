@@ -121,16 +121,6 @@ Generate asymmetric certificate `(recommended)`
 > 
 > And put the shared/public key in other service, like resource service. In case for verify JWT validation
 
-### JSON Web Token (JWT)
-Generate token
-```sh
-node ./scripts/generate-token.js generate '{"sub":"andaikan@nodomain.com","profile":{"accountId":"1","usrRegistrantId":"1","uname":"andaikan","email":"andaikan@nodomain.com","phone":"+6286313149xxx","name":"Andaikan"},"roles":["owner"],"scope":"offline_access","client_id":"all-in-one-client","aud":"http://localhost:3001/xyz"}'
-```
-
-Decode token
-```sh
-node ./scripts/generate-token.js decode 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbmRhaWthbkBub2RvbWFpbi5jb20iLCJwcm9maWxlIjp7ImFjY291bnRJZCI6IjEiLCJ1c3JSZWdpc3RyYW50SWQiOiIxIiwidW5hbWUiOiJhbmRhaWthbiIsImVtYWlsIjoiYW5kYWlrYW5Abm9kb21haW4uY29tIiwicGhvbmUiOiIrNjI4NjMxMzE0OXh4eCIsIm5hbWUiOiJBbmRhaWthbiJ9LCJyb2xlcyI6WyJvd25lciJdLCJzY29wZSI6Im9mZmxpbmVfYWNjZXNzIiwiY2xpZW50X2lkIjoiYWxsLWluLW9uZS1jbGllbnQiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjMwMDEveHl6IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdC9vYXV0aC9hL2IvYyIsImV4cCI6MTcwMzE2NTAxOSwiaWF0IjoxNjcxNjI1MDE5fQ.VwjWqOKmcns9z0wdaKwolFveAbY96ehmTO6cizO6utLJuXStsrQd9DerIo9YY81zHc1xfAoP_ubR__uVRkk1Ecv4H0VevzM2NPvG7iwtoHsaUPLTgcZ9havrhfQcTD9lvIfBG4yffZL5BPN9FFSpoCu7KfmS7PyDgKmgekYnQLRNGclwq1Lic1z8awPXs_p_JxxUCBrvXwK1HpMGj-WnC56QIPnKD1uV9polgglmeT-dLDsIafSrec8JFc1gGlr1R0A_zO0NbfWfy7iStW03nGPwcZ0cJhu0OfMs5ZXX1ySyA11M_aNcKYRi4hZaMKDtOIDB0pbSZbg5CTpC43NGIg'
-```
 
 ### Other
 Run client example
